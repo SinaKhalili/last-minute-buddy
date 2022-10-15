@@ -1,6 +1,10 @@
+import { Session } from "@supabase/supabase-js";
 import Head from "next/head";
+import { useEffect, useState } from "react";
 import StitchesLogo from "../components/StitchesLogo";
+import Account from "../modules/auth/components/Account";
 import Auth from "../modules/auth/components/Auth";
+import { supabase } from "../modules/database/supabase";
 import { styled } from "../stitches.config";
 
 const Box = styled("div", {});
@@ -36,20 +40,49 @@ const Container = styled("div", {
 });
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [session, setSession] = useState<Session | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function getInitialSession() {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      // only update the react state if the component is still mounted
+      if (mounted) {
+        if (session) {
+          setSession(session);
+        }
+
+        setIsLoading(false);
+      }
+    }
+
+    getInitialSession();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => {
+      mounted = false;
+
+      subscription?.unsubscribe();
+    };
+  }, []);
+
   return (
-    <Box css={{ paddingY: "$6" }}>
-      <Head>
-        <title>Last Minute Buddy</title>
-      </Head>
-      <Container size={{ "@initial": "1", "@bp1": "2" }}>
-        <StitchesLogo />
-        <Text as="h1">Hello, from Stitches.</Text>
-        <Text>
-          For full documentation, visit{" "}
-          <Link href="https://stitches.dev">stitches.dev</Link>.
-        </Text>
+    <div className="container" style={{ padding: "50px 0 100px 0" }}>
+      {!session ? (
         <Auth />
-      </Container>
-    </Box>
+      ) : (
+        <Account key={session.user.id} session={session} />
+      )}
+    </div>
   );
 }
