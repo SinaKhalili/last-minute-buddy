@@ -5,7 +5,7 @@ import Logo from "../images/logo.png";
 
 const LMBHeader = () => {
   return (
-    <Flex p="16px" flexDir="column" alignItems="center">
+    <Flex py="16px" pt="16px" flexDir="column" alignItems="center">
       <Box>
         <Image src={Logo} />
       </Box>

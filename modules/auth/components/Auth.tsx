@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   FormControl,
+  FormHelperText,
   FormLabel,
   Input,
   Spinner,
@@ -23,7 +24,7 @@ export default function Auth() {
       if (error) throw error;
       alert("Check your email for the login link!");
     } catch (error: any) {
-      alert(error.error_description || error.message);
+      console.log(error.error_description, error.message);
     } finally {
       setLoading(false);
     }
@@ -33,8 +34,9 @@ export default function Auth() {
     <Box px="16px">
       <Box>
         <Text>
-          Let us help you find your next movie date, travel buddy, or workout
-          pal. We'll send you a magic link to log in.
+          Someone cancelled on the last minute? Let us help you find your next
+          movie date, travel buddy, or workout pal. We'll send you a magic link
+          to log in.
         </Text>
       </Box>
 
@@ -48,9 +50,15 @@ export default function Auth() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+            <FormHelperText>We'll never share your email.</FormHelperText>
           </FormControl>
 
-          <Button type="submit" disabled={loading} mt="16px" width="100%">
+          <Button
+            type="submit"
+            disabled={loading || email.length < 1}
+            mt="16px"
+            width="100%"
+          >
             {loading ? <Spinner size="xs" /> : "Log in"}
           </Button>
         </form>

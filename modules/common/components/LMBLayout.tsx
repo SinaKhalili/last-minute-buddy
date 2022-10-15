@@ -15,8 +15,10 @@ const LMBLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       justifyContent="center"
       flexDir="column"
     >
-      <LMBHeader />
-      <div>{children}</div>
+      <Box maxW="512px">
+        <LMBHeader />
+        <div>{children}</div>
+      </Box>
     </Flex>
   );
 };

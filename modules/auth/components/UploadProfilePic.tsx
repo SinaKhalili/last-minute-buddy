@@ -1,4 +1,17 @@
+import {
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  Image,
+  Input,
+  Spinner,
+  Text,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+
 import { supabase } from "../../database/supabase";
 
 export default function Avatar({
@@ -62,28 +75,30 @@ export default function Avatar({
   }
 
   return (
-    <div>
+    <Flex justifyContent="center" flexDir="column" alignItems="center">
       {avatarUrl ? (
-        <img
+        <Image
           src={avatarUrl}
           alt="Avatar"
-          className="avatar image"
-          style={{ height: size, width: size }}
+          h={size}
+          w={size}
+          borderRadius="1000px"
         />
       ) : (
-        <img
+        <Image
           src={
             "https://sdzfoliimaqiexsuffjc.supabase.co/storage/v1/object/public/defaults/default_profile_square.png"
           }
           alt="Avatar"
-          className="avatar image"
-          style={{ height: size, width: size }}
+          h={size}
+          w={size}
+          borderRadius="1000px"
         />
       )}
-      <div style={{ width: size }}>
-        <label className="button primary block" htmlFor="single">
+      <Box w={size}>
+        <FormLabel htmlFor="single">
           {uploading ? "Uploading ..." : "Upload"}
-        </label>
+        </FormLabel>
         <input
           style={{
             visibility: "hidden",
@@ -95,7 +110,7 @@ export default function Avatar({
           onChange={uploadAvatar}
           disabled={uploading}
         />
-      </div>
-    </div>
+      </Box>
+    </Flex>
   );
 }
