@@ -1,7 +1,20 @@
-import { useState, useEffect } from "react";
-import { supabase } from "../../database/supabase";
-import { Session } from "@supabase/supabase-js";
+import {
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  Image,
+  Input,
+  Spinner,
+  Text,
+} from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+
 import Avatar from "./UploadProfilePic";
+import { Session } from "@supabase/supabase-js";
+import { supabase } from "../../database/supabase";
 
 export default function Account({ session }: { session: Session }) {
   const [loading, setLoading] = useState(true);
@@ -91,7 +104,7 @@ export default function Account({ session }: { session: Session }) {
   }
 
   return (
-    <div className="form-widget">
+    <Box width="100%">
       <Avatar
         url={avatar_url}
         size={150}
@@ -100,47 +113,35 @@ export default function Account({ session }: { session: Session }) {
           updateProfile({ username, website, avatar_url: url });
         }}
       />
-      <div>
-        <label htmlFor="email">Email</label>
-        <input id="email" type="text" value={session.user.email} disabled />
-      </div>
-      <div>
-        <label htmlFor="username">Name</label>
-        <input
-          id="username"
-          type="text"
-          value={username || ""}
+      <FormControl>
+        <FormLabel htmlFor="email">Email address</FormLabel>
+        <Input type="email" value={session.user.email} disabled />
+      </FormControl>
+
+      <FormControl mt="16px">
+        <FormLabel htmlFor="email">Username</FormLabel>
+        <Input
+          placeholder="Enter your username"
+          value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
-      </div>
-      <div>
-        <label htmlFor="website">Website</label>
-        <input
-          id="website"
-          type="website"
-          value={website || ""}
-          onChange={(e) => setWebsite(e.target.value)}
-        />
-      </div>
+      </FormControl>
 
-      <div>
-        <button
-          className="button primary block"
+      <Box width="100%" mt="16px">
+        <Button
+          width="100%"
           onClick={() => updateProfile({ username, website, avatar_url })}
           disabled={loading}
         >
-          {loading ? "Loading ..." : "Update"}
-        </button>
-      </div>
+          {loading ? <Spinner size="xs" /> : "Update"}
+        </Button>
+      </Box>
 
-      <div>
-        <button
-          className="button block"
-          onClick={() => supabase.auth.signOut()}
-        >
+      <Box width="100%" mt="16px">
+        <Button width="100%" onClick={() => supabase.auth.signOut()}>
           Sign Out
-        </button>
-      </div>
-    </div>
+        </Button>
+      </Box>
+    </Box>
   );
 }

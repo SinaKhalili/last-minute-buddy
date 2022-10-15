@@ -1,9 +1,12 @@
-import { Session } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
+
 import Account from "../modules/auth/components/Account";
+import { Session } from "@supabase/supabase-js";
 import { supabase } from "../modules/database/supabase";
+import { useRouter } from "next/router";
 
 export default function AccountPage() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
 
@@ -19,6 +22,8 @@ export default function AccountPage() {
       if (mounted) {
         if (session) {
           setSession(session);
+        } else {
+          router.push("/");
         }
 
         setIsLoading(false);
@@ -40,9 +45,5 @@ export default function AccountPage() {
     };
   }, []);
 
-  return !session ? (
-    <div>No session :pepeSadge:</div>
-  ) : (
-    <Account key={session.user.id} session={session} />
-  );
+  return !session ? null : <Account key={session.user.id} session={session} />;
 }

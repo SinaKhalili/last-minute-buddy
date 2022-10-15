@@ -82,7 +82,7 @@ export default function Avatar({
           alt="Avatar"
           h={size}
           w={size}
-          borderRadius="1000px"
+          borderRadius="6px"
         />
       ) : (
         <Image
@@ -92,25 +92,23 @@ export default function Avatar({
           alt="Avatar"
           h={size}
           w={size}
-          borderRadius="1000px"
+          borderRadius="6px"
         />
       )}
-      <Box w={size}>
-        <FormLabel htmlFor="single">
-          {uploading ? "Uploading ..." : "Upload"}
-        </FormLabel>
-        <input
-          style={{
-            visibility: "hidden",
-            position: "absolute",
-          }}
-          type="file"
-          id="single"
-          accept="image/*"
-          onChange={uploadAvatar}
-          disabled={uploading}
-        />
-      </Box>
+      <FormLabel htmlFor="single" mt="16px">
+        {uploading ? "Uploading ..." : "Upload Profile Photo"}
+      </FormLabel>
+      <input
+        style={{
+          visibility: "hidden",
+          position: "absolute",
+        }}
+        type="file"
+        id="single"
+        accept="image/*"
+        onChange={uploadAvatar}
+        disabled={uploading}
+      />
     </Flex>
   );
 }
