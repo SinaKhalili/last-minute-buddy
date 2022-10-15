@@ -20,7 +20,12 @@ export default function Auth() {
     e.preventDefault();
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signInWithOtp({ email });
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: "http://localhost:3000/account",
+        },
+      });
       if (error) throw error;
       alert("Check your email for the login link!");
     } catch (error: any) {
