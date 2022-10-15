@@ -1,4 +1,6 @@
 import { FormEvent, useState } from "react";
+
+import { Box } from "@chakra-ui/react";
 import { supabase } from "../../database/supabase";
 
 export default function Auth() {
@@ -20,8 +22,7 @@ export default function Auth() {
   };
 
   return (
-    <div>
-      <h1>Auth</h1>
+    <Box>
       <form onSubmit={handleLogin}>
         <label htmlFor="email">Email address</label>
         <input
@@ -36,6 +37,6 @@ export default function Auth() {
           {loading ? "Loading..." : "Log in"}
         </button>
       </form>
-    </div>
+    </Box>
   );
 }
