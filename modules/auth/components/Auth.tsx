@@ -1,6 +1,14 @@
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Spinner,
+  Text,
+} from "@chakra-ui/react";
 import { FormEvent, useState } from "react";
 
-import { Box } from "@chakra-ui/react";
 import { supabase } from "../../database/supabase";
 
 export default function Auth() {
@@ -22,21 +30,31 @@ export default function Auth() {
   };
 
   return (
-    <Box>
-      <form onSubmit={handleLogin}>
-        <label htmlFor="email">Email address</label>
-        <input
-          id="email"
-          type="email"
-          className="input-block"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <button className="button block" type="submit" disabled={loading}>
-          {loading ? "Loading..." : "Log in"}
-        </button>
-      </form>
+    <Box px="16px">
+      <Box>
+        <Text>
+          Let us help you find your next movie date, travel buddy, or workout
+          pal. We'll send you a magic link to log in.
+        </Text>
+      </Box>
+
+      <Box mt="16px">
+        <form onSubmit={handleLogin}>
+          <FormControl>
+            <FormLabel htmlFor="email">Email address</FormLabel>
+            <Input
+              type="email"
+              placeholder="Enter your email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </FormControl>
+
+          <Button type="submit" disabled={loading} mt="16px" width="100%">
+            {loading ? <Spinner size="xs" /> : "Log in"}
+          </Button>
+        </form>
+      </Box>
     </Box>
   );
 }

@@ -12,6 +12,7 @@ const LMBLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       right="0px"
       overflowY="auto"
       alignItems="center"
+      justifyContent="center"
       flexDir="column"
     >
       <LMBHeader />
