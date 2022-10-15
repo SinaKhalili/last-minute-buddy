@@ -1,4 +1,5 @@
 import { Head, Html, Main, NextScript } from 'next/document'
+
 import { getCssText } from '../stitches.config'
 
 export default function MyDocument() {

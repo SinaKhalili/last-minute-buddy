@@ -12,7 +12,7 @@ const Text = styled('p', {
 const Link = styled('a', {
   fontFamily: '$system',
   textDecoration: 'none',
-  color: '$purple600',
+  color: '$emerald700',
 })
 
 const Container = styled('div', {
@@ -38,7 +38,7 @@ export default function Home() {
   return (
     <Box css={{ paddingY: '$6' }}>
       <Head>
-        <title>Use Stitches with Next.js</title>
+        <title>Last Minute Buddy</title>
       </Head>
       <Container size={{ '@initial': '1', '@bp1': '2' }}>
         <StitchesLogo />
