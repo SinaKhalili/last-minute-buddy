@@ -58,7 +58,6 @@ export default function Auth() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <FormHelperText>We'll never share your email.</FormHelperText>
           </FormControl>
 
           <Button

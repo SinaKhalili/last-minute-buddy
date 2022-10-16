@@ -27,7 +27,25 @@ export const Broadcast = ({ session }: { session: Session }) => {
 
   useEffect(() => {
     getProfile();
+    listenToNeedBuddy();
   }, [session]);
+
+  async function listenToNeedBuddy() {
+    supabase
+      .channel("*")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          table: "NeedBuddy",
+          schema: "public",
+        },
+        (payload) => {
+          console.log(payload);
+        }
+      )
+      .subscribe();
+  }
 
   async function getCurrentUser() {
     const {
@@ -61,9 +79,15 @@ export const Broadcast = ({ session }: { session: Session }) => {
         throw error;
       }
 
+      let { data: data2 } = await supabase
+        .from("NeedBuddy")
+        .select("needsFriend")
+        .eq("userId", user.id)
+        .single();
+
       if (data) {
         setUsername(data.username);
-        setLookingForBuddy(data.lookingForBuddy);
+        setLookingForBuddy(data2?.needsFriend ?? false);
         setAvatarUrl(data.avatar_url);
       }
     } catch (error: any) {
@@ -73,23 +97,22 @@ export const Broadcast = ({ session }: { session: Session }) => {
     }
   }
 
-  async function updateLookingForBuddy(lookingForBuddy: boolean) {
+  async function updateLookingForBuddy(needsFriend: boolean) {
     try {
       setLoading(true);
       const user = await getCurrentUser();
 
       const updates = {
-        id: user.id,
-        lookingForBuddy,
-        updated_at: new Date(),
+        userId: user.id,
+        needsFriend,
       };
 
-      let { error } = await supabase.from("profiles").upsert(updates);
+      let { error } = await supabase.from("NeedBuddy").upsert(updates);
 
       if (error) {
         throw error;
       } else {
-        setLookingForBuddy(lookingForBuddy);
+        setLookingForBuddy(needsFriend);
       }
     } catch (error: any) {
       alert(error.message);
@@ -98,7 +121,7 @@ export const Broadcast = ({ session }: { session: Session }) => {
     }
   }
   return (
-    <Flex flexDir="column" alignItems="center">
+    <Flex flexDir="column" alignItems="center" px="16px">
       {lookingForBuddy ? (
         <>
           <Image src="https://media.tenor.com/4MsBgyiY65YAAAAi/cat-peach.gif" />
