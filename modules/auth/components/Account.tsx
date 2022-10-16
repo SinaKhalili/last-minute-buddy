@@ -140,6 +140,12 @@ export default function Account({ session }: { session: Session }) {
       </Box>
 
       <Box width="100%" mt="16px">
+        <Button width="100%" onClick={() => router.push("/")}>
+          Home
+        </Button>
+      </Box>
+
+      <Box width="100%" mt="16px">
         <Button
           width="100%"
           onClick={() => {
