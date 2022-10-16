@@ -26,7 +26,7 @@ export default function Auth() {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: "http://localhost:3000/account",
+          emailRedirectTo: "https://last-minute-buddy-r5cy.vercel.app/account",
         },
       });
       if (error) throw error;

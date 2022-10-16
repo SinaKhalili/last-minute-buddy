@@ -23,6 +23,7 @@ export const Broadcast = ({ session }: { session: Session }) => {
   const [username, setUsername] = useState("");
   const [avatar_url, setAvatarUrl] = useState("");
   const [lookingForBuddy, setLookingForBuddy] = useState(false);
+  const [match, setMatch] = useState<any>(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -31,17 +32,29 @@ export const Broadcast = ({ session }: { session: Session }) => {
   }, [session]);
 
   async function listenToNeedBuddy() {
+    const user = await getCurrentUser();
     supabase
       .channel("*")
       .on(
         "postgres_changes",
-        {
-          event: "UPDATE",
-          table: "NeedBuddy",
-          schema: "public",
-        },
-        (payload) => {
-          console.log(payload);
+        { event: "UPDATE", schema: "public", table: "NeedBuddy" },
+        async (payload) => {
+          const needBuddy = payload.new as any;
+          if (
+            needBuddy.id === user.id &&
+            needBuddy.potentialFriend !== user.id
+          ) {
+            const { data } = await supabase
+              .from("profiles")
+              .select("username, avatar_url")
+              .eq("id", needBuddy.potentialFriend)
+              .single();
+
+            await downloadImage(data?.avatar_url);
+
+            setMatch(true);
+            setLookingForBuddy(false);
+          }
         }
       )
       .subscribe();
@@ -62,6 +75,20 @@ export const Broadcast = ({ session }: { session: Session }) => {
     }
 
     return session.user;
+  }
+  async function downloadImage(path: string) {
+    try {
+      const { data, error } = await supabase.storage
+        .from("avatars")
+        .download(path);
+      if (error) {
+        throw error;
+      }
+      const url = URL.createObjectURL(data);
+      setAvatarUrl(url);
+    } catch (error: any) {
+      console.log("Error downloading image: ", error.message);
+    }
   }
 
   async function getProfile() {
@@ -102,6 +129,7 @@ export const Broadcast = ({ session }: { session: Session }) => {
       const user = await getCurrentUser();
 
       setLoading(true);
+      setMatch(false);
 
       let { data: needsMatch } = await supabase
         .from("NeedBuddy")
@@ -118,10 +146,21 @@ export const Broadcast = ({ session }: { session: Session }) => {
         };
 
         await supabase.from("NeedBuddy").upsert(updates);
+
+        const { data } = await supabase
+          .from("profiles")
+          .select("username, avatar_url")
+          .eq("id", needsMatch.id)
+          .single();
+
+        await downloadImage(data?.avatar_url);
+
+        setMatch(true);
       } else {
         const updates = {
           id: user.id,
           needsFriend,
+          potentialFriend: user.id,
         };
 
         let { error } = await supabase.from("NeedBuddy").upsert(updates);
@@ -180,6 +219,12 @@ export const Broadcast = ({ session }: { session: Session }) => {
           </Button>
         </>
       )}
+      {match ? (
+        <>
+          <Image src={avatar_url} margin="16px" height="256px" width="256px" />
+          <Text>Found buddy!</Text>
+        </>
+      ) : null}
     </Flex>
   );
 };
