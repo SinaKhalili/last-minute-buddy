@@ -82,7 +82,7 @@ export const Broadcast = ({ session }: { session: Session }) => {
       let { data: data2 } = await supabase
         .from("NeedBuddy")
         .select("needsFriend")
-        .eq("userId", user.id)
+        .eq("id", user.id)
         .single();
 
       if (data) {
@@ -103,7 +103,7 @@ export const Broadcast = ({ session }: { session: Session }) => {
       const user = await getCurrentUser();
 
       const updates = {
-        userId: user.id,
+        id: user.id,
         needsFriend,
       };
 
@@ -162,13 +162,6 @@ export const Broadcast = ({ session }: { session: Session }) => {
           </Button>
         </>
       )}
-      <button
-        onClick={() => {
-          fetch("/refresh").then((v) => console.log(v));
-        }}
-      >
-        refresh
-      </button>
     </Flex>
   );
 };
