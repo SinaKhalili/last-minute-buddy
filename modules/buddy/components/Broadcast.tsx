@@ -99,20 +99,38 @@ export const Broadcast = ({ session }: { session: Session }) => {
 
   async function updateLookingForBuddy(needsFriend: boolean) {
     try {
-      setLoading(true);
       const user = await getCurrentUser();
 
-      const updates = {
-        id: user.id,
-        needsFriend,
-      };
+      setLoading(true);
 
-      let { error } = await supabase.from("NeedBuddy").upsert(updates);
+      let { data: needsMatch } = await supabase
+        .from("NeedBuddy")
+        .select("id")
+        .eq("needsFriend", true)
+        .neq("id", user.id)
+        .single();
 
-      if (error) {
-        throw error;
+      if (needsMatch) {
+        const updates = {
+          id: needsMatch.id,
+          needsFriend: false,
+          potentialFriend: user.id,
+        };
+
+        await supabase.from("NeedBuddy").upsert(updates);
       } else {
-        setLookingForBuddy(needsFriend);
+        const updates = {
+          id: user.id,
+          needsFriend,
+        };
+
+        let { error } = await supabase.from("NeedBuddy").upsert(updates);
+
+        if (error) {
+          throw error;
+        } else {
+          setLookingForBuddy(needsFriend);
+        }
       }
     } catch (error: any) {
       alert(error.message);
