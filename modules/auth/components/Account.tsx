@@ -15,8 +15,10 @@ import { useEffect, useState } from "react";
 import Avatar from "./UploadProfilePic";
 import { Session } from "@supabase/supabase-js";
 import { supabase } from "../../database/supabase";
+import { useRouter } from "next/router";
 
 export default function Account({ session }: { session: Session }) {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState("");
   const [website, setWebsite] = useState("");
@@ -138,7 +140,13 @@ export default function Account({ session }: { session: Session }) {
       </Box>
 
       <Box width="100%" mt="16px">
-        <Button width="100%" onClick={() => supabase.auth.signOut()}>
+        <Button
+          width="100%"
+          onClick={() => {
+            supabase.auth.signOut();
+            router.push("/");
+          }}
+        >
           Sign Out
         </Button>
       </Box>

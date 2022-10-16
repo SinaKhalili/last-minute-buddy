@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertIcon,
   Box,
   Button,
   FormControl,
@@ -15,6 +17,7 @@ import { supabase } from "../../database/supabase";
 export default function Auth() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
+  const [sent, setSent] = useState(false);
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
@@ -27,7 +30,7 @@ export default function Auth() {
         },
       });
       if (error) throw error;
-      alert("Check your email for the login link!");
+      setSent(true);
     } catch (error: any) {
       console.log(error.error_description, error.message);
     } finally {
@@ -67,6 +70,12 @@ export default function Auth() {
             {loading ? <Spinner size="xs" /> : "Log in"}
           </Button>
         </form>
+        {sent ? (
+          <Alert status="success" mt="16px">
+            <AlertIcon />
+            Magic link was sent to your email! Check your inbox.
+          </Alert>
+        ) : null}
       </Box>
     </Box>
   );

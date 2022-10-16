@@ -17,7 +17,7 @@ const LMBLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     >
       <Box maxW="512px">
         <LMBHeader />
-        <div>{children}</div>
+        <Box width="100%">{children}</Box>
       </Box>
     </Flex>
   );
