@@ -139,6 +139,13 @@ export const Broadcast = ({ session }: { session: Session }) => {
           </Button>
         </>
       )}
+      <button
+        onClick={() => {
+          fetch("/refresh").then((v) => console.log(v));
+        }}
+      >
+        refresh
+      </button>
     </Flex>
   );
 };
